@@ -1,20 +1,36 @@
 # machinelearning
 
 Abstract
-This study investigates the differential gene expression profiles of  pancreatic islet cells from nondiabetic, Type 1 diabetic (T1D), and Type 2 diabetic (T2D) donors, and how these differences correlate to the disease’s physiologic effects.  Using data from GEO dataset GSE12472, single-cell RNA-sequencing was used to analyze transcriptomic variations.  The data was processed to remove irrelevant entries as well as standardize diabetes-related labels.  Differential gene expression analysis was conducted using DESeq2 to identify key genes and pathways distinguishing between different donor groups.  The findings from this study aim to better amplify our understanding of molecular mechanisms underlying diabetes and to potentially guide the development of targeted therapy.
- 
+Breast cancer is a leading cause of mortality globally, with survival duration influenced by various clinical and demographic features. This project aims to predict patient survival times using machine learning techniques applied to a dataset of breast cancer patients diagnosed with infiltrating ductal and lobular carcinoma. We have employed two regression models, Random Forest and Decision Tree with AdaBoost, enhanced with hyperparameter tuning and feature selection, to identify the most influential predictors. A key focus is evaluating the impact of including or excluding the feature ‘Status_Dead’, a binary variable indicating survival status, on model performance and interpretability. The model performs better with the inclusion of ‘Status_Dead’, while excluding it, shows that tumor size, age, and regional node information serve as significant predictors as well. These findings shine light on the value of machine learning in survival analysis while addressing the concerns of overreliance on certain variables and ensuring robust predictions.
 Introduction
-Diabetes is a group of chronic diseases affecting the metabolism. It causes issues with insulin production, action, or both, resulting in hyperglycemia. This causes long term damage and dysfunction to several organs, especially affecting the eyes, kidney, nerves, and heart. It is divided into Type 1 (T1) and Type 2 (T2) variants, with T1 being an autoimmune disorder resulting from the immune system attacking the islet cells that produce insulin, and T2 resulting from the pancreas producing less insulin overall, and/or the body becoming resistant to insulin. While both are affected by genetic factors, Type 2 is more influenced by diet and lifestyle, although the onset of either can also be triggered by external factors.  
- 
-Dataset
-GSE124742, the dataset used in our project, was collected from combined single-cell RNAseq of human pancreatic islet cells. It consists of 1,369 pancreas patch-seq cells (nondiabetic and type II diabetes), 348 cryopreserved patch-seq cells (nondiabetic and type I diabetes), and 3,518 FACS islet cells from the same donors.  In total, cells from 18 nondiabetic, 7 T2D donors, 3 T1D (cryopreserved) and 3 nondiabetic donors (cryopreserved) were used.
- 
-Methods
- 
-The Dataset was first cleaned by removing n/a values and then sampled from the categories of Nondiabetic, Type 1 Diabetes, and Type 2 Diabetes for the first factor (diabetes status), and neither, FACS, and Patch-Seq for the second factor (sequencing method). Unfortunately, the dataset is lacking T1 FACS samples as the T1 samples were only obtained from cryopreserved patch-seq cells.
-Differential analysis was performed using DESeq2 tuned using single-cell dataset parameters. (LRT over Wald test with the reduced model examining only diabetes status, minimum replicates for replacements at infinite)
-The results of the model were then examined for the T1 diabetic vs nondiabetic and T2 diabetic vs nondiabetic groups, with results that passed an adjusted p-value of 0.5 after FDR correction. These two models were shrunk for LFC analysis using apeglm, and results with a resulting LFC < -1 or > 1 were pulled to create our list of differentially expressed genes. The resulting overlap was compared via Fisher’s exact test using the GeneOverlap library to determine significance.
- 
-PCA plotting was used to visualize the variance of the different categories.
- 
-The differentially expressed genes were searched for significant Gene Ontology term results with a p-value cutoff of 0.1 using GOStats hypergeometric tests.  
+Breast cancer remains the most common cancer among women worldwide, with over 2 million new cases diagnosed annually. Despite advancements in detection and treatment strategies, survival rates still vary significantly due to factors such as disease stage, tumor size, patient age, and access to treatment. Predicting survival times can serve as a powerful tool for personalized medicine, enabling clinicians to tailor treatments, optimize resource allocation, and ultimately improve patient outcomes.
+Machine learning has emerged as a transformative tool in healthcare, capable of uncovering hidden patterns within complex datasets and enhancing survival predictions. By training regression models on clinical and demographic data, we aim to identify key factors that influence survival time. However, challenges arise when certain features, such as ‘Status_Dead’ binary indicator of survival status), dominate predictions. This can lead to data leakage, inflating model performance but compromising interpretability. In this project, we apply Random Forest and AdaBoost machine learning models to predict breast cancer survival times. We explore two key questions:
+1.	How effectively do machine learning models predict breast cancer patient survival times based on clinical and demographic features?
+2.	What is the impact of including or excluding ‘Status_Dead’ on both model performance and the identification of influential predictors?
+By comparing models trained with and without ‘Status_Dead’, we aim to highlight the role of alternative features such as tumor size, regional node involvement, and age, balancing predictive accuracy with clinical interpretability.
+Hypothesis
+Clinical and demographic characteristics such as tumor stage, patient age, and progesterone status will be good predictors of survival duration in breast cancer patients. By applying machine learning models to these factors, we will be able to estimate survival months with reasonable accuracy, which in turn will highlight key variables that have the most impact on survival times.
+Methodology
+To predict breast cancer survival times, we applied machine learning models using clinical and demographic data. Our approach included the following steps:
+1.	Data Preprocessing
+●	We used a dataset containing clinical and demographic information of breast cancer patients.
+●	Categorical Variables were encoded using OneHotEncoder, transforming non-numerical data into binary features, ensuring compatibility with machine learning regression models.
+●	Numerical Variables (Age, Tumor Size, etc.) were standardized using
+StandardScaler to scale the features to a mean of 0 and a standard
+deviation of 1, to improve model performance.
+2.	Feature Selection
+●	Mutual Information and Feature Importance techniques were applied to identify the most influential predictors of survival times
+●	The inclusion and exclusion of ‘Status_Dead’ were explicitly tested in order to approximate its impact on model performance and feature rankings.
+3.	Model Selection
+●	We implemented two machine learning regression models:
+-	Random Forest Regressor: A robust estimator that fits a number of decision tree regressors on various sub-samples of datasets, using averaging to improve the prediction accuracy.
+-	AdaBoost Regressor: A boosting algorithm that iteratively improves weak learners, by focusing on errors from previous iterations.
+4.	Hyperparameter Tuning
+●	Hyperparameter tuning was performed using GridSearchCV with 5-fold Cross-Validation to identify the best parameters, such as the number of estimators, learning rate, and tree depth.
+5.	Model Evaluation
+●	We split the dataset into 80% training and 20% testing subsets, using train-test split.
+●	Models were evaluated on the test set
+Due to the continuous numerical nature of the target variable, survival months, regression models were used and compared with one another. Thus the metrics used to compare the two models were mean absolute error (MAE), mean squared error (MSE), and r-squared (R2).
+6.	Feature Importance Analysis
+●	Feature importance was visualized to identify which clinical and demographic features contributed most to survival predictions.
+●	Comparisons were made between models with and without ‘Status_Dead’ to aid in understanding its influence on predictions.
